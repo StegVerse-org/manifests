@@ -30,6 +30,8 @@ Single source of truth for pricing, packages, and configuration across the StegV
 }
 ```
 
+Required pricing consumers must treat `pricing.json` as canonical. Pages, SDK docs, calculators, and product surfaces may render from this file, but they must not maintain independent pricing tier copies.
+
 ### packages.json
 
 TBD — will define SDK versions, release channels, dependency matrices.
@@ -61,8 +63,8 @@ For production, consider:
 - Versioned URLs for major releases: `pricing-v2.json`, `pricing-v3.json`
 - ETag support for conditional fetches
 
-## Emergency Override
+## Failure Behavior
 
-If the primary source fails, the fetcher falls back to a hardcoded minimal
-manifest embedded in `pricing-fetcher.js`. This ensures the pricing page
-never renders completely blank.
+If the primary source fails, consumers should show a clear operational error rather than silently rendering stale embedded pricing. This preserves the one-edit pricing model and prevents drift between the Site, SDK, and future commercial surfaces.
+
+A local or generated fallback may exist for development, but it must be visibly marked as non-canonical and must not become a second pricing source of truth.
